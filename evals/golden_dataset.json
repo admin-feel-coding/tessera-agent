@@ -1,0 +1,802 @@
+[
+  {
+    "id": "eval_case_001",
+    "transaction": {
+      "transaction_id": "txn_eval_001",
+      "user_id": "eval_bl_user_001",
+      "amount": 320.00,
+      "currency": "USD",
+      "merchant_category": "electronics",
+      "email": "user001@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "user_id eval_bl_user_001 is on the blacklist, triggering blacklist_hit=true and DECLINE at risk_score=0.95."
+  },
+  {
+    "id": "eval_case_002",
+    "transaction": {
+      "transaction_id": "txn_eval_002",
+      "user_id": "eval_bl_user_002",
+      "amount": 75.50,
+      "currency": "USD",
+      "merchant_category": "food",
+      "email": "user002@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "user_id eval_bl_user_002 is on the blacklist, triggering blacklist_hit=true and DECLINE at risk_score=0.95."
+  },
+  {
+    "id": "eval_case_003",
+    "transaction": {
+      "transaction_id": "txn_eval_003",
+      "user_id": "eval_bl_user_003",
+      "amount": 1250.00,
+      "currency": "EUR",
+      "merchant_category": "travel",
+      "email": "user003@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "user_id eval_bl_user_003 is on the blacklist, triggering blacklist_hit=true and DECLINE at risk_score=0.95."
+  },
+  {
+    "id": "eval_case_004",
+    "transaction": {
+      "transaction_id": "txn_eval_004",
+      "user_id": "eval_bl_user_001",
+      "amount": 89.99,
+      "currency": "USD",
+      "merchant_category": "gaming",
+      "email": "another@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "user_id eval_bl_user_001 is on the blacklist regardless of merchant category; DECLINE fires immediately."
+  },
+  {
+    "id": "eval_case_005",
+    "transaction": {
+      "transaction_id": "txn_eval_005",
+      "user_id": "eval_bl_user_002",
+      "amount": 4500.00,
+      "currency": "GBP",
+      "merchant_category": "luxury",
+      "email": "luxury@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "user_id eval_bl_user_002 is blacklisted; high-value luxury transaction still declines on blacklist_hit."
+  },
+  {
+    "id": "eval_case_006",
+    "transaction": {
+      "transaction_id": "txn_eval_006",
+      "user_id": "eval_user_006",
+      "amount": 199.00,
+      "currency": "USD",
+      "merchant_category": "software",
+      "email": "eval_bl_001@test.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "email eval_bl_001@test.com is blacklisted, triggering blacklist_hit=true and DECLINE."
+  },
+  {
+    "id": "eval_case_007",
+    "transaction": {
+      "transaction_id": "txn_eval_007",
+      "user_id": "eval_user_007",
+      "amount": 55.00,
+      "currency": "USD",
+      "merchant_category": "restaurants",
+      "email": "eval_bl_002@test.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "email eval_bl_002@test.com is blacklisted; DECLINE fires on blacklist_hit=true."
+  },
+  {
+    "id": "eval_case_008",
+    "transaction": {
+      "transaction_id": "txn_eval_008",
+      "user_id": "eval_user_008",
+      "amount": 850.00,
+      "currency": "EUR",
+      "merchant_category": "hotels",
+      "email": "eval_bl_001@test.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "email eval_bl_001@test.com is blacklisted regardless of amount; DECLINE."
+  },
+  {
+    "id": "eval_case_009",
+    "transaction": {
+      "transaction_id": "txn_eval_009",
+      "user_id": "eval_user_009",
+      "amount": 22.00,
+      "currency": "USD",
+      "merchant_category": "groceries",
+      "email": "eval_bl_002@test.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "email eval_bl_002@test.com is blacklisted; low-amount grocery purchase still declines."
+  },
+  {
+    "id": "eval_case_010",
+    "transaction": {
+      "transaction_id": "txn_eval_010",
+      "user_id": "eval_user_010",
+      "amount": 3000.00,
+      "currency": "USD",
+      "merchant_category": "wire_transfer",
+      "email": "eval_bl_001@test.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "email eval_bl_001@test.com is blacklisted; high-risk wire transfer category still declines on blacklist_hit."
+  },
+  {
+    "id": "eval_case_011",
+    "transaction": {
+      "transaction_id": "txn_eval_011",
+      "user_id": "eval_user_011",
+      "amount": 125.00,
+      "currency": "USD",
+      "merchant_category": "electronics",
+      "email": "user011@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": "EVALBL1"
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "card_bin EVALBL1 is blacklisted; DECLINE fires on blacklist_hit=true."
+  },
+  {
+    "id": "eval_case_012",
+    "transaction": {
+      "transaction_id": "txn_eval_012",
+      "user_id": "eval_user_012",
+      "amount": 499.00,
+      "currency": "GBP",
+      "merchant_category": "fashion",
+      "email": "user012@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": "EVALBL2"
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "card_bin EVALBL2 is blacklisted; DECLINE fires on blacklist_hit=true."
+  },
+  {
+    "id": "eval_case_013",
+    "transaction": {
+      "transaction_id": "txn_eval_013",
+      "user_id": "eval_user_013",
+      "amount": 2200.00,
+      "currency": "USD",
+      "merchant_category": "jewelry",
+      "email": "user013@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": "EVALBL1"
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "card_bin EVALBL1 is blacklisted; high-value jewelry purchase still declines on blacklist_hit."
+  },
+  {
+    "id": "eval_case_014",
+    "transaction": {
+      "transaction_id": "txn_eval_014",
+      "user_id": "eval_user_014",
+      "amount": 38.00,
+      "currency": "EUR",
+      "merchant_category": "food",
+      "email": "user014@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": "EVALBL2"
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "card_bin EVALBL2 is blacklisted; low-amount food purchase still declines on blacklist_hit."
+  },
+  {
+    "id": "eval_case_015",
+    "transaction": {
+      "transaction_id": "txn_eval_015",
+      "user_id": "eval_user_015",
+      "amount": 750.00,
+      "currency": "USD",
+      "merchant_category": "crypto",
+      "email": "user015@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": "EVALBL1"
+    },
+    "expected_decision": "DECLINE",
+    "rationale": "card_bin EVALBL1 is blacklisted; DECLINE fires regardless of crypto merchant category."
+  },
+  {
+    "id": "eval_case_016",
+    "transaction": {
+      "transaction_id": "txn_eval_016",
+      "user_id": "eval_vel_001",
+      "amount": 250.00,
+      "currency": "USD",
+      "merchant_category": "electronics",
+      "email": "vel001@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_001 has 25 seeded txns (velocity_flag=true) and 10.99.1.1 has risk_score=0.9 (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_017",
+    "transaction": {
+      "transaction_id": "txn_eval_017",
+      "user_id": "eval_vel_002",
+      "amount": 180.00,
+      "currency": "USD",
+      "merchant_category": "travel",
+      "email": "vel002@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_002 has 25 seeded txns (velocity_flag=true) and 10.99.1.1 has risk_score=0.9 (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_018",
+    "transaction": {
+      "transaction_id": "txn_eval_018",
+      "user_id": "eval_vel_003",
+      "amount": 99.00,
+      "currency": "EUR",
+      "merchant_category": "gaming",
+      "email": "vel003@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_003 has 25 seeded txns (velocity_flag=true) and 10.99.1.1 is a high-risk VPN IP (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_019",
+    "transaction": {
+      "transaction_id": "txn_eval_019",
+      "user_id": "eval_vel_004",
+      "amount": 560.00,
+      "currency": "GBP",
+      "merchant_category": "luxury",
+      "email": "vel004@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_004 has 25 seeded txns (velocity_flag=true) and 10.99.1.1 has risk_score=0.9 (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_020",
+    "transaction": {
+      "transaction_id": "txn_eval_020",
+      "user_id": "eval_vel_005",
+      "amount": 310.00,
+      "currency": "USD",
+      "merchant_category": "software",
+      "email": "vel005@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_005 has 25 seeded txns (velocity_flag=true) and 10.99.1.1 has risk_score=0.9 (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_021",
+    "transaction": {
+      "transaction_id": "txn_eval_021",
+      "user_id": "eval_vel_001",
+      "amount": 420.00,
+      "currency": "USD",
+      "merchant_category": "hotels",
+      "email": "vel001b@example.com",
+      "ip_address": "10.99.1.2",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_001 has velocity_flag=true and 10.99.1.2 has risk_score=0.9 (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_022",
+    "transaction": {
+      "transaction_id": "txn_eval_022",
+      "user_id": "eval_vel_002",
+      "amount": 75.00,
+      "currency": "USD",
+      "merchant_category": "restaurants",
+      "email": "vel002b@example.com",
+      "ip_address": "10.99.1.2",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_002 has velocity_flag=true and 10.99.1.2 has risk_score=0.9 (ip_risk_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_023",
+    "transaction": {
+      "transaction_id": "txn_eval_023",
+      "user_id": "eval_vel_001",
+      "amount": 900.00,
+      "currency": "USD",
+      "merchant_category": "electronics",
+      "email": "vel001c@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_001 has velocity_flag=true and eval_d_susp_001 is a suspicious device (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_024",
+    "transaction": {
+      "transaction_id": "txn_eval_024",
+      "user_id": "eval_vel_002",
+      "amount": 140.00,
+      "currency": "EUR",
+      "merchant_category": "fashion",
+      "email": "vel002c@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_002 has velocity_flag=true and eval_d_susp_001 is suspicious (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_025",
+    "transaction": {
+      "transaction_id": "txn_eval_025",
+      "user_id": "eval_vel_003",
+      "amount": 680.00,
+      "currency": "USD",
+      "merchant_category": "travel",
+      "email": "vel003c@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_003 has velocity_flag=true and eval_d_susp_001 is suspicious (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_026",
+    "transaction": {
+      "transaction_id": "txn_eval_026",
+      "user_id": "eval_vel_004",
+      "amount": 220.00,
+      "currency": "GBP",
+      "merchant_category": "gaming",
+      "email": "vel004c@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_002",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_004 has velocity_flag=true and eval_d_susp_002 is suspicious (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_027",
+    "transaction": {
+      "transaction_id": "txn_eval_027",
+      "user_id": "eval_vel_005",
+      "amount": 480.00,
+      "currency": "USD",
+      "merchant_category": "software",
+      "email": "vel005c@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_002",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_005 has velocity_flag=true and eval_d_susp_002 is suspicious (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_028",
+    "transaction": {
+      "transaction_id": "txn_eval_028",
+      "user_id": "eval_vel_003",
+      "amount": 95.00,
+      "currency": "USD",
+      "merchant_category": "groceries",
+      "email": "vel003d@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_002",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_003 has velocity_flag=true and eval_d_susp_002 is suspicious (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_029",
+    "transaction": {
+      "transaction_id": "txn_eval_029",
+      "user_id": "eval_vel_004",
+      "amount": 1100.00,
+      "currency": "EUR",
+      "merchant_category": "jewelry",
+      "email": "vel004d@example.com",
+      "ip_address": "",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "eval_vel_004 has velocity_flag=true and eval_d_susp_001 is suspicious (device_fingerprint_flag=true); 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_031",
+    "transaction": {
+      "transaction_id": "txn_eval_031",
+      "user_id": "eval_clean_001",
+      "amount": 150.00,
+      "currency": "USD",
+      "merchant_category": "electronics",
+      "email": "clean001r@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "Clean user but 10.99.1.1 has ip_risk_flag=true and eval_d_susp_001 has device_fingerprint_flag=true; 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_032",
+    "transaction": {
+      "transaction_id": "txn_eval_032",
+      "user_id": "eval_clean_002",
+      "amount": 275.00,
+      "currency": "EUR",
+      "merchant_category": "travel",
+      "email": "clean002r@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "Clean user but 10.99.1.1 has ip_risk_flag=true and eval_d_susp_001 has device_fingerprint_flag=true; 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_033",
+    "transaction": {
+      "transaction_id": "txn_eval_033",
+      "user_id": "eval_clean_003",
+      "amount": 50.00,
+      "currency": "USD",
+      "merchant_category": "food",
+      "email": "clean003r@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "eval_d_susp_002",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "Clean user but 10.99.1.1 has ip_risk_flag=true and eval_d_susp_002 has device_fingerprint_flag=true; 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_034",
+    "transaction": {
+      "transaction_id": "txn_eval_034",
+      "user_id": "eval_clean_004",
+      "amount": 800.00,
+      "currency": "GBP",
+      "merchant_category": "hotels",
+      "email": "clean004r@example.com",
+      "ip_address": "10.99.1.2",
+      "device_id": "eval_d_susp_001",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "Clean user but 10.99.1.2 has ip_risk_flag=true and eval_d_susp_001 has device_fingerprint_flag=true; 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_035",
+    "transaction": {
+      "transaction_id": "txn_eval_035",
+      "user_id": "eval_clean_005",
+      "amount": 199.99,
+      "currency": "USD",
+      "merchant_category": "software",
+      "email": "clean005r@example.com",
+      "ip_address": "10.99.1.2",
+      "device_id": "eval_d_susp_002",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "Clean user but 10.99.1.2 has ip_risk_flag=true and eval_d_susp_002 has device_fingerprint_flag=true; 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_036",
+    "transaction": {
+      "transaction_id": "txn_eval_036",
+      "user_id": "eval_clean_006",
+      "amount": 410.00,
+      "currency": "USD",
+      "merchant_category": "gaming",
+      "email": "clean006r@example.com",
+      "ip_address": "10.99.1.1",
+      "device_id": "eval_d_susp_002",
+      "card_bin": ""
+    },
+    "expected_decision": "ESCALATE",
+    "rationale": "Clean user but 10.99.1.1 has ip_risk_flag=true and eval_d_susp_002 has device_fingerprint_flag=true; 2 flags trigger ESCALATE."
+  },
+  {
+    "id": "eval_case_037",
+    "transaction": {
+      "transaction_id": "txn_eval_037",
+      "user_id": "eval_clean_001",
+      "amount": 50.00,
+      "currency": "USD",
+      "merchant_category": "groceries",
+      "email": "clean001@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_001 has fewer than 10 txns, no blacklist hits, no risky IP, no suspicious device; all signals clear."
+  },
+  {
+    "id": "eval_case_038",
+    "transaction": {
+      "transaction_id": "txn_eval_038",
+      "user_id": "eval_clean_002",
+      "amount": 120.00,
+      "currency": "USD",
+      "merchant_category": "food",
+      "email": "clean002@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_002 has fewer than 10 txns, no blacklist hits, no risky signals; APPROVE with risk_score=0.10."
+  },
+  {
+    "id": "eval_case_039",
+    "transaction": {
+      "transaction_id": "txn_eval_039",
+      "user_id": "eval_clean_003",
+      "amount": 350.00,
+      "currency": "EUR",
+      "merchant_category": "electronics",
+      "email": "clean003@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_003 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_040",
+    "transaction": {
+      "transaction_id": "txn_eval_040",
+      "user_id": "eval_clean_004",
+      "amount": 85.00,
+      "currency": "USD",
+      "merchant_category": "software",
+      "email": "clean004@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_004 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_041",
+    "transaction": {
+      "transaction_id": "txn_eval_041",
+      "user_id": "eval_clean_005",
+      "amount": 210.00,
+      "currency": "GBP",
+      "merchant_category": "fashion",
+      "email": "clean005@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_005 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_042",
+    "transaction": {
+      "transaction_id": "txn_eval_042",
+      "user_id": "eval_clean_006",
+      "amount": 5000.00,
+      "currency": "USD",
+      "merchant_category": "travel",
+      "email": "clean006@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_006 is a clean user with no risk signals; high amount but no flags trigger APPROVE."
+  },
+  {
+    "id": "eval_case_043",
+    "transaction": {
+      "transaction_id": "txn_eval_043",
+      "user_id": "eval_clean_007",
+      "amount": 730.00,
+      "currency": "USD",
+      "merchant_category": "electronics",
+      "email": "clean007@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_007 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_044",
+    "transaction": {
+      "transaction_id": "txn_eval_044",
+      "user_id": "eval_clean_008",
+      "amount": 62.50,
+      "currency": "EUR",
+      "merchant_category": "restaurants",
+      "email": "clean008@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_008 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_045",
+    "transaction": {
+      "transaction_id": "txn_eval_045",
+      "user_id": "eval_clean_009",
+      "amount": 1450.00,
+      "currency": "USD",
+      "merchant_category": "hotels",
+      "email": "clean009@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_009 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_046",
+    "transaction": {
+      "transaction_id": "txn_eval_046",
+      "user_id": "eval_clean_010",
+      "amount": 290.00,
+      "currency": "GBP",
+      "merchant_category": "gaming",
+      "email": "clean010@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_010 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_047",
+    "transaction": {
+      "transaction_id": "txn_eval_047",
+      "user_id": "eval_clean_007",
+      "amount": 175.00,
+      "currency": "USD",
+      "merchant_category": "groceries",
+      "email": "clean007b@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_007 is a clean user with no risk signals in groceries; APPROVE."
+  },
+  {
+    "id": "eval_case_048",
+    "transaction": {
+      "transaction_id": "txn_eval_048",
+      "user_id": "eval_clean_008",
+      "amount": 3200.00,
+      "currency": "USD",
+      "merchant_category": "jewelry",
+      "email": "clean008b@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_008 is a clean user; even a high-value jewelry purchase approves with no risk signals."
+  },
+  {
+    "id": "eval_case_049",
+    "transaction": {
+      "transaction_id": "txn_eval_049",
+      "user_id": "eval_clean_009",
+      "amount": 99.00,
+      "currency": "EUR",
+      "merchant_category": "software",
+      "email": "clean009b@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_009 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_050",
+    "transaction": {
+      "transaction_id": "txn_eval_050",
+      "user_id": "eval_clean_010",
+      "amount": 540.00,
+      "currency": "USD",
+      "merchant_category": "fashion",
+      "email": "clean010b@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_010 is a clean user with no risk signals; APPROVE."
+  },
+  {
+    "id": "eval_case_051",
+    "transaction": {
+      "transaction_id": "txn_eval_051",
+      "user_id": "eval_clean_006",
+      "amount": 88.00,
+      "currency": "EUR",
+      "merchant_category": "restaurants",
+      "email": "clean006c@example.com",
+      "ip_address": "",
+      "device_id": "",
+      "card_bin": ""
+    },
+    "expected_decision": "APPROVE",
+    "rationale": "eval_clean_006 is a clean user with no risk signals; APPROVE."
+  }
+]

@@ -1,0 +1,43 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/tessera
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - run: docker build -t ${{ env.REGISTRY }}/tessera-agent:${{ github.sha }} .
+      - run: docker push ${{ env.REGISTRY }}/tessera-agent:${{ github.sha }}
+
+      - uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: tessera-agent
+          region: ${{ vars.GCP_REGION }}
+          image: ${{ env.REGISTRY }}/tessera-agent:${{ github.sha }}
+          flags: --allow-unauthenticated --min-instances=0 --max-instances=2
+          env_vars: |
+            TESSERA_DATA_URL=${{ vars.TESSERA_DATA_URL }}
+            INTERNAL_API_KEY=${{ secrets.INTERNAL_API_KEY }}
+            ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+            LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }}
+            LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }}

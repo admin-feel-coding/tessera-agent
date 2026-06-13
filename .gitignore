@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# uv
+.uv/
+
+# Eval results (generated at runtime, not committed)
+evals/results/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Pyright / type caches
+.pyright/
+pyrightconfig.json
