@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.auth import verify_internal_key
 from app.clients.tessera_data import TesseraDataClient
@@ -17,4 +17,16 @@ async def list_verdicts(
         result = await client.list_verdicts(limit=limit, offset=offset)
     finally:
         await client.close()
+    return result
+
+
+@router.get("/verdicts/{transaction_id}", dependencies=[Depends(verify_internal_key)])
+async def get_verdict(transaction_id: str) -> dict:
+    client = TesseraDataClient(settings.tessera_data_url, settings.internal_api_key)
+    try:
+        result = await client.get_verdict(transaction_id)
+    finally:
+        await client.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Verdict not found")
     return result

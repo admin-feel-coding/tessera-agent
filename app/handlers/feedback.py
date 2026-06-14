@@ -9,5 +9,5 @@ router = APIRouter()
 
 @router.post("/feedback", status_code=202, dependencies=[Depends(verify_internal_key)])
 async def feedback(payload: FeedbackPayload) -> dict:
-    await feedback_service(payload)
-    return {"accepted": True}
+    case_id = await feedback_service(payload)
+    return {"accepted": True, "case_id": case_id, "corpus_status": "indexed"}

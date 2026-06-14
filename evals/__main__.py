@@ -2,10 +2,12 @@
 
 Usage:
     uv run python -m evals
+    uv run python -m evals --repeats 3
 """
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import json
 import sys
@@ -37,6 +39,12 @@ def _print_table(metrics: dict, results: list[dict]) -> None:
     print(f"  Avg latency      : {avg_lat:.0f} ms")
     print(f"  P95 latency      : {p95_lat:.0f} ms")
     print(f"  Errors           : {errors}")
+
+    if "pass_at_1" in metrics:
+        k = metrics["pass_k"]
+        print(f"  pass@1           : {metrics['pass_at_1']:.1%}  (any run correct, k={k})")
+        print(f"  pass@k           : {metrics['pass_at_k']:.1%}  (all runs correct, k={k})")
+
     print()
     print("  By decision:")
     print(f"  {'Decision':<12} {'Expected':>10} {'Correct':>10} {'Accuracy':>10}")
@@ -66,8 +74,21 @@ def _print_table(metrics: dict, results: list[dict]) -> None:
 
 
 async def _main() -> None:
+    parser = argparse.ArgumentParser(description="Tessera eval suite")
+    parser.add_argument(
+        "--repeats",
+        type=int,
+        default=1,
+        metavar="N",
+        help="Run each case N times for pass^k measurement (default: 1)",
+    )
+    args = parser.parse_args()
+
     print("Running eval suite against golden_dataset.json ...")
-    results = await run_eval()
+    if args.repeats > 1:
+        print(f"  repeats={args.repeats} — pass^k mode enabled")
+
+    results = await run_eval(repeats=args.repeats)
     metrics = compute_metrics(results)
 
     _print_table(metrics, results)

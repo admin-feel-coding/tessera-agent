@@ -13,6 +13,12 @@ _EMPTY_USER_HISTORY: dict = {
 _EMPTY_IP_RISK: dict = {"risk_score": 0.0, "is_vpn": False, "country": "unknown"}
 _EMPTY_DEVICE_FINGERPRINT: dict = {"suspicious": False, "user_count": 1, "first_seen": None}
 _EMPTY_BLACKLIST: dict = {"match": False, "kind": None, "reason": None}
+_EMPTY_VELOCITY: dict = {
+    "distinct_users_by_ip": 0,
+    "distinct_users_by_bin": 0,
+    "total_txns_in_window": 0,
+    "window_minutes": 60,
+}
 
 
 class TesseraDataClient:
@@ -103,6 +109,36 @@ class TesseraDataClient:
             )
             return _EMPTY_BLACKLIST
 
+    async def check_velocity(
+        self,
+        ip_address: str,
+        card_bin: str,
+        window_minutes: int = 60,
+        *,
+        trace_id: str = "",
+    ) -> dict:
+        params = {
+            "ip": ip_address,
+            "card_bin": card_bin,
+            "window_minutes": str(window_minutes),
+        }
+        try:
+            resp = await self._client.get(
+                "/velocity/check",
+                params=params,
+                headers={"X-Trace-ID": trace_id},
+            )
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as exc:
+            log.warn("tessera_data_error", method="check_velocity", error=str(exc))
+            return {
+                "distinct_users_by_ip": 0,
+                "distinct_users_by_bin": 0,
+                "total_txns_in_window": 0,
+                "window_minutes": window_minutes,
+            }
+
     async def search_similar_cases(
         self,
         embedding: list[float],
@@ -161,6 +197,26 @@ class TesseraDataClient:
                 error=str(exc),
             )
             return {"id": "", "transaction_id": verdict_data.get("transaction_id", "")}
+
+    async def get_verdict(self, transaction_id: str, trace_id: str = "") -> dict | None:
+        """GET /verdicts/{transaction_id} — returns the verdict or None if not found."""
+        try:
+            r = await self._client.get(
+                f"/verdicts/{transaction_id}",
+                headers=self._trace_headers(trace_id),
+            )
+            if r.status_code == 404:
+                return None
+            r.raise_for_status()
+            return r.json()
+        except (httpx.HTTPError, httpx.TimeoutException) as exc:
+            log.warn(
+                "tessera_data_error",
+                method="get_verdict",
+                transaction_id=transaction_id,
+                error=str(exc),
+            )
+            return None
 
     async def list_verdicts(self, limit: int = 50, offset: int = 0, trace_id: str = "") -> dict:
         """GET /verdicts?limit=N&offset=N — returns {"verdicts": [...], "total": N}"""

@@ -8,7 +8,7 @@ from app.services.embedding import embed
 log = structlog.get_logger(__name__)
 
 
-async def process_feedback(payload: FeedbackPayload) -> None:
+async def process_feedback(payload: FeedbackPayload) -> str:
     log.info(
         "feedback_received",
         transaction_id=payload.transaction_id,
@@ -48,3 +48,5 @@ async def process_feedback(payload: FeedbackPayload) -> None:
             "feedback_save_failed",
             transaction_id=payload.transaction_id,
         )
+
+    return case_id
